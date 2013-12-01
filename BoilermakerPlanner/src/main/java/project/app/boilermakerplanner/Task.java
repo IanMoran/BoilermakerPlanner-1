@@ -9,6 +9,7 @@ import java.util.Calendar;
 
 public class Task {
 
+	private int id;
     private Calendar cal;
     private String description;
     private boolean recurs;
@@ -29,6 +30,14 @@ public class Task {
     }
 
     // Accessor Methods
+	
+	public int getID(){
+		return id;
+	}
+	
+	public void setID(int id){
+		this.id = id;
+	}
 
     public Calendar getCal() {
         return cal;

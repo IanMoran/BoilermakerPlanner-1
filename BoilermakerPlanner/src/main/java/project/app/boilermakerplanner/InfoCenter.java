@@ -20,7 +20,7 @@ public class InfoCenter {
 	String dbName = "PurdueConnectData";
 	String createTableStatement = "CREATE TABLE tasks (ID int NOT NULL AUTO_INCREMENT, Year int, Month int, Date int, Hour int, Minute int, Description varchar(255), Recursion int, RecursionDays int)";
 	
-	//Constructor, initializes Connection object, and calls InitializeDatabase
+	//Initializes Connection object, and calls InitializeDatabase
 	public static void initialize()
 	{
 		Properties props = new Properties();
@@ -66,7 +66,8 @@ public class InfoCenter {
 	}
 	
 	//Returns an ArrayList of type Task containing all tasks in the database/table
-    public ArrayList<Task> getTasks(Calendar cal) {
+    public ArrayList<Task> getTasks(Calendar cal) 
+	{
         ArrayList<Task> tasks = new ArrayList<Task>();
 		Statement statement = dbConnect.createStatement();
 		
@@ -87,14 +88,18 @@ public class InfoCenter {
 			Calendar cal = new Calendar();
 			cal.set(year, month, day, hour, minute);
 			
+			Task task;
+			
 			if(recurs)
 			{
-				tasks.add(new Task(cal, descrip, recursDay));
+				task = new Task(cal, descrip, recursDay));
 			}
 			else
 			{
-				tasks.add(new Task(cal, descrip));
+				task = new Task(cal, descrip));
 			}
+			
+			task.setID(id);
 		}
 		statement.close();
 		results.close();
@@ -123,4 +128,41 @@ public class InfoCenter {
 		statement.executeUpdate("INSERT INTO tasks (Year, Month, Date, Hour, Minute, Description, Recursion, RecursionDays) VALUES(" +year+", "+month+", "+day+", "+hour+", "+minute+", '"+descrip+"', "+recurI+", "+recursDays+")");
 		statement.close();
 		return;
+	}
+	
+	public static void updateTask(Task taskToUpdate)
+	{
+		Statement statement = dbConnect.createStatement();
+		
+		int id = taskToUpdate.getID();
+		
+		Calendar cal = taskToUpdate.getCal();
+		int year = cal.get(YEAR);
+		int month = cal.get(MONTH);
+		int day = cal.get(DAY_OF_MONTH);
+		int hour = cal.get(HOUR_OF_DAY);
+		int minute = cal.get(MINUTE);
+		
+		String descrip = taskToUpdate.getDescription();
+		boolean recur = taskUpdate.getRecurs();
+		int recurI;
+		if(recur) recurI = 1;
+		else recurI = 0;
+		int recursDays = taskToUpdate.getRecurIntervalDays();
+		
+		statement.executeUpdate("UPDATE tasks SET Year="+year+", Month="+month+", Date="+day+", Hour="+hour+", Minute="+minute+", Description='"+descrip+"', Recursion="+recurI+", RecursionDays="+recursDays+" WHERE ID="+id);
+		statement.close();
+		return;
+	}
+	
+	public static void removeTask(Task taskToRemove)
+	{
+		Statement statement = dbConnect.createStatement();
+		
+		int id = taskToDelete.getID();
+		
+		statement.executeUpdate("DELETE FROM tasks WHERE ID="+id);
+		statement.close();
+		return;
+	}
 }
